@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Mainstream</title>
+</head>
+<body>
+    <script>
+        // Extract tracking number from URL query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackingNumber = urlParams.get('trackingNumber');
+
+        // If tracking number is present, proceed
+        if (trackingNumber) {
+            // Create a form that submits to Mainstream's tracking endpoint
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://www.mainstream.co.nz/actions/Mainstream/API/ConsignmentStatus';
+
+            // Hidden input for the CSRF token (this token should be dynamic, but this is an example)
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'CRAFT_CSRF_TOKEN';
+            csrfToken.value = 'ZmuO9knRBtvQOyqAVG13CgSqtvGl7ywVCd66MjpR'; // Example token
+            form.appendChild(csrfToken);
+
+            // Hidden input for the jobId (tracking number)
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'jobId';
+            input.value = trackingNumber;
+            form.appendChild(input);
+
+            // Append the form to the body and submit it
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            // Redirect to Mainstream homepage if no tracking number is provided
+            window.location.href = 'https://www.mainstream.co.nz/';
+        }
+    </script>
+</body>
+</html>
