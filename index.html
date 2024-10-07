@@ -8,38 +8,54 @@
 </head>
 <body>
     <script>
-        // Extract tracking number from URL query parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const trackingNumber = urlParams.get('trackingNumber');
-
-        // If tracking number is present, proceed
-        if (trackingNumber) {
-            // Create a form that submits to Mainstream's tracking endpoint
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://www.mainstream.co.nz/actions/Mainstream/API/ConsignmentStatus';
-
-            // Hidden input for the CSRF token (this token should be dynamic, but this is an example)
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'CRAFT_CSRF_TOKEN';
-            csrfToken.value = 'ZmuO9knRBtvQOyqAVG13CgSqtvGl7ywVCd66MjpR'; // Example token
-            form.appendChild(csrfToken);
-
-            // Hidden input for the jobId (tracking number)
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'jobId';
-            input.value = trackingNumber;
-            form.appendChild(input);
-
-            // Append the form to the body and submit it
-            document.body.appendChild(form);
-            form.submit();
-        } else {
-            // Redirect to Mainstream homepage if no tracking number is provided
-            window.location.href = 'https://www.mainstream.co.nz/';
+        // Function to get CSRF token dynamically
+        async function fetchCsrfToken() {
+            const response = await fetch('https://www.mainstream.co.nz/');
+            const text = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            const token = doc.querySelector('input[name="CRAFT_CSRF_TOKEN"]').value;
+            return token;
         }
+
+        // Redirect function
+        async function redirectToMainstream() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const trackingNumber = urlParams.get('trackingNumber');
+
+            if (trackingNumber) {
+                const csrfToken = await fetchCsrfToken();
+
+                // Create a form that submits to Mainstream's tracking endpoint
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'https://www.mainstream.co.nz/actions/Mainstream/API/ConsignmentStatus';
+
+                // Hidden input for the CSRF token
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'CRAFT_CSRF_TOKEN';
+                csrfInput.value = csrfToken;
+                form.appendChild(csrfInput);
+
+                // Hidden input for the jobId (tracking number)
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'jobId';
+                input.value = trackingNumber;
+                form.appendChild(input);
+
+                // Append the form to the body and submit it
+                document.body.appendChild(form);
+                form.submit();
+            } else {
+                // Redirect to Mainstream homepage if no tracking number is provided
+                window.location.href = 'https://www.mainstream.co.nz/';
+            }
+        }
+
+        // Call the redirect function
+        redirectToMainstream();
     </script>
 </body>
 </html>
