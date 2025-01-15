@@ -47,31 +47,23 @@
       const mainstreamUrl = "https://www.mainstream.co.nz";
       loadingIndicator.textContent = "Redirecting to Mainstream and entering tracking number...";
 
-      // Redirect and automate input after page load
-      window.location.href = mainstreamUrl;
-      window.onload = () => {
-        // Automate entering tracking number and clicking track
-        const automationScript = `
-          (function() {
-            const inputField = document.querySelector("input[name='jobId']");
-            const trackButton = document.querySelector("button.input-group-button");
+      // Redirect with a slight delay to ensure the page is ready for automation
+      setTimeout(() => {
+        window.location.href = mainstreamUrl;
 
-            if (inputField) {
-              inputField.value = "${trackingNumber}";
-              if (trackButton) {
-                trackButton.click();
-              } else {
-                console.error("Track button not found!");
-              }
-            } else {
-              console.error("Input field not found!");
-            }
-          })();
-        `;
-        document.body.appendChild(
-          Object.assign(document.createElement('script'), { text: automationScript })
-        );
-      };
+        // Add a delayed script to handle input and button clicking after page load
+        setTimeout(() => {
+          const inputField = document.querySelector("input[name='jobId']");
+          const trackButton = document.querySelector("button.input-group-button");
+
+          if (inputField && trackButton) {
+            inputField.value = trackingNumber; // Enter tracking number
+            trackButton.click(); // Click the "Track" button
+          } else {
+            console.error("Tracking input or button not found!");
+          }
+        }, 2000); // Delay to ensure the page elements are fully loaded
+      }, 1000); // Initial redirect delay
     }
 
     // Run the function on page load
@@ -79,3 +71,4 @@
   </script>
 </body>
 </html>
+
