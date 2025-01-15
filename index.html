@@ -47,11 +47,11 @@
       const mainstreamUrl = "https://www.mainstream.co.nz";
       loadingIndicator.textContent = "Redirecting to Mainstream and entering tracking number...";
 
-      // Redirect with a slight delay to ensure the page is ready for automation
+      // Redirect and delay script execution after page load
       setTimeout(() => {
         window.location.href = mainstreamUrl;
 
-        // Add a delayed script to handle input and button clicking after page load
+        // Use a separate setTimeout to wait for the page to fully load
         setTimeout(() => {
           const inputField = document.querySelector("input[name='jobId']");
           const trackButton = document.querySelector("button.input-group-button");
@@ -62,8 +62,8 @@
           } else {
             console.error("Tracking input or button not found!");
           }
-        }, 2000); // Delay to ensure the page elements are fully loaded
-      }, 1000); // Initial redirect delay
+        }, 3000); // Give the page some time to load before trying to enter data
+      }, 1000); // Redirect delay
     }
 
     // Run the function on page load
@@ -71,4 +71,3 @@
   </script>
 </body>
 </html>
-
