@@ -22,7 +22,7 @@
 <body>
   <h1>Mainstream Tracking</h1>
   <p>Tracking order number: <span id="tracking-number"></span></p>
-  <p class="loading" id="loading">Redirecting to Mainstream...</p>
+  <p class="loading" id="loading">Redirecting to Mainstream and searching...</p>
   <script>
     // Function to extract query parameters from URL
     function getQueryParam(param) {
@@ -31,7 +31,7 @@
     }
 
     // Main function for Mainstream tracking automation
-    async function trackOrder() {
+    function trackOrder() {
       const trackingNumber = getQueryParam('number'); // Get tracking number from URL
       const trackingNumberElement = document.getElementById('tracking-number');
       const loadingIndicator = document.getElementById('loading');
@@ -42,11 +42,36 @@
       }
 
       trackingNumberElement.textContent = trackingNumber;
-      loadingIndicator.textContent = "Redirecting to Mainstream and tracking...";
 
-      // Redirect to Mainstream and fill in the tracking number
+      // Redirect to Mainstream's website
       const mainstreamUrl = "https://www.mainstream.co.nz";
-      window.location.href = `${mainstreamUrl}?trackingNumber=${trackingNumber}`;
+      loadingIndicator.textContent = "Redirecting to Mainstream and entering tracking number...";
+
+      // Redirect and automate input after page load
+      window.location.href = mainstreamUrl;
+      window.onload = () => {
+        // Automate entering tracking number and clicking track
+        const automationScript = `
+          (function() {
+            const inputField = document.querySelector("input[name='jobId']");
+            const trackButton = document.querySelector("button.input-group-button");
+
+            if (inputField) {
+              inputField.value = "${trackingNumber}";
+              if (trackButton) {
+                trackButton.click();
+              } else {
+                console.error("Track button not found!");
+              }
+            } else {
+              console.error("Input field not found!");
+            }
+          })();
+        `;
+        document.body.appendChild(
+          Object.assign(document.createElement('script'), { text: automationScript })
+        );
+      };
     }
 
     // Run the function on page load
