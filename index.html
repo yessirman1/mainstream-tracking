@@ -14,7 +14,6 @@
       color: #333;
     }
     .loading {
-      display: none;
       font-size: 16px;
       color: #555;
     }
@@ -32,7 +31,7 @@
     }
 
     // Main function for Mainstream tracking automation
-    function trackOrder() {
+    async function trackOrder() {
       const trackingNumber = getQueryParam('number'); // Get tracking number from URL
       const trackingNumberElement = document.getElementById('tracking-number');
       const loadingIndicator = document.getElementById('loading');
@@ -43,26 +42,11 @@
       }
 
       trackingNumberElement.textContent = trackingNumber;
-      loadingIndicator.style.display = 'block';
+      loadingIndicator.textContent = "Redirecting to Mainstream and tracking...";
 
-      // Open Mainstream homepage
+      // Redirect to Mainstream and fill in the tracking number
       const mainstreamUrl = "https://www.mainstream.co.nz";
-      const newWindow = window.open(mainstreamUrl, "_blank");
-
-      if (newWindow) {
-        // Automate input and button click after the page loads
-        const automationScript = `
-          document.querySelector("input[name='trackingNumber']").value = "${trackingNumber}";
-          document.querySelector("button[type='submit']").click();
-        `;
-
-        // Execute the script on the new page
-        newWindow.onload = () => {
-          newWindow.eval(automationScript);
-        };
-      } else {
-        alert("Popup blocked! Please allow pop-ups for this site.");
-      }
+      window.location.href = `${mainstreamUrl}?trackingNumber=${trackingNumber}`;
     }
 
     // Run the function on page load
