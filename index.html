@@ -1,50 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Track Consignment</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mainstream Tracking</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .loading {
+      display: none;
+      font-size: 16px;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-    <h1>Redirecting to Mainstream...</h1>
-    <p>Your tracking number will be populated automatically.</p>
+  <h1>Mainstream Tracking</h1>
+  <p>Tracking order number: <span id="tracking-number"></span></p>
+  <p class="loading" id="loading">Redirecting to Mainstream...</p>
+  <script>
+    // Function to extract query parameters from URL
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
 
-    <script>
-        // Simulating retrieval of tracking number from Mintsoft
-        const trackingNumber = "{0}"; // This will be replaced with the actual tracking number by the server-side code
+    // Main function for Mainstream tracking automation
+    function trackOrder() {
+      const trackingNumber = getQueryParam('number'); // Get tracking number from URL
+      const trackingNumberElement = document.getElementById('tracking-number');
+      const loadingIndicator = document.getElementById('loading');
 
-        // Mainstream tracking URL
-        const mainstreamUrl = "https://www.mainstream.co.nz/actions/Mainstream/API/ConsignmentStatus";
+      if (!trackingNumber) {
+        trackingNumberElement.textContent = "No tracking number provided.";
+        return;
+      }
 
-        // Creating a form programmatically
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = mainstreamUrl;
+      trackingNumberElement.textContent = trackingNumber;
+      loadingIndicator.style.display = 'block';
 
-        // CSRF Token
-        const csrfToken = "ZmuO9knRBtvQOyqAVG13CgSqtvGl7ywVCd66MjpR";
+      // Open Mainstream homepage
+      const mainstreamUrl = "https://www.mainstream.co.nz";
+      const newWindow = window.open(mainstreamUrl, "_blank");
 
-        // Creating an input for the CSRF token
-        const csrfInput = document.createElement("input");
-        csrfInput.type = "hidden";
-        csrfInput.name = "CRAFT_CSRF_TOKEN";
-        csrfInput.value = csrfToken;
-        form.appendChild(csrfInput);
+      if (newWindow) {
+        // Automate input and button click after the page loads
+        const automationScript = `
+          document.querySelector("input[name='trackingNumber']").value = "${trackingNumber}";
+          document.querySelector("button[type='submit']").click();
+        `;
 
-        // Creating an input for the job ID (tracking number)
-        const jobIdInput = document.createElement("input");
-        jobIdInput.type = "text";
-        jobIdInput.name = "jobId";
-        jobIdInput.placeholder = "Maintrack Ref/Note No.";
-        jobIdInput.value = trackingNumber; // Setting the value to the tracking number
-        form.appendChild(jobIdInput);
+        // Execute the script on the new page
+        newWindow.onload = () => {
+          newWindow.eval(automationScript);
+        };
+      } else {
+        alert("Popup blocked! Please allow pop-ups for this site.");
+      }
+    }
 
-        // Appending the form to the body
-        document.body.appendChild(form);
-
-        // Automatically submit the form
-        form.submit();
-    </script>
+    // Run the function on page load
+    trackOrder();
+  </script>
 </body>
 </html>
-
