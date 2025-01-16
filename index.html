@@ -7,33 +7,34 @@
 </head>
 <body>
     <h1>Track Your Mainstream Order</h1>
-    <input type="text" id="trackingNumber" placeholder="Enter Tracking Number">
-    <button onclick="trackOrder()">Track</button>
-
-    <div id="result"></div>
 
     <script>
-        function trackOrder() {
-            // Get the tracking number entered by the user
-            const trackingNumber = document.getElementById("trackingNumber").value;
-
+        // Function to load the tracking page
+        function loadTrackingPage(trackingNumber) {
             if (trackingNumber) {
-                // Replace the {0} placeholder in the URL with the tracking number
-                const trackingUrl = `https://yessirman1.github.io/mainstream-tracking/?trackingNumber=${trackingNumber}`;
-
-                // Create an iframe to load Mainstream's tracking page with the tracking number
+                // Create an iframe and set the src to the Mainstream tracking page
                 const iframe = document.createElement("iframe");
-                iframe.src = trackingUrl; // URL with tracking number passed as query parameter
+                iframe.src = `https://www.mainstream.co.nz/?jobId=${trackingNumber}`;  // Use tracking number in the URL
                 iframe.style.width = "100%";
                 iframe.style.height = "600px";
                 
-                // Clear any previous results and append the iframe
-                document.getElementById("result").innerHTML = ""; 
+                // Clear any previous content and append the iframe
+                document.body.innerHTML = ''; // Clear the body content (removes the input and button)
                 document.body.appendChild(iframe);
             } else {
-                alert("Please enter a tracking number.");
+                alert("Tracking number not found.");
             }
+        }
+
+        // Extract tracking number from the URL (WMS will pass it as part of the URL query)
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackingNumber = urlParams.get('trackingNumber');
+
+        // Call the function to load the tracking page if trackingNumber is found in the URL
+        if (trackingNumber) {
+            loadTrackingPage(trackingNumber);
         }
     </script>
 </body>
 </html>
+
