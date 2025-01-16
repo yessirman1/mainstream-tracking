@@ -1,73 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mainstream Tracking</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      color: #333;
-    }
-    .loading {
-      font-size: 16px;
-      color: #555;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Mainstream Order</title>
 </head>
 <body>
-  <h1>Mainstream Tracking</h1>
-  <p>Tracking order number: <span id="tracking-number"></span></p>
-  <p class="loading" id="loading">Redirecting to Mainstream and searching...</p>
-  <script>
-    // Function to extract query parameters from URL
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
+    <h1>Track Your Mainstream Order</h1>
+    <input type="text" id="trackingNumber" placeholder="Enter Tracking Number">
+    <button onclick="trackOrder()">Track</button>
 
-    // Main function for Mainstream tracking automation
-    function trackOrder() {
-      const trackingNumber = getQueryParam('number'); // Get tracking number from URL
-      const trackingNumberElement = document.getElementById('tracking-number');
-      const loadingIndicator = document.getElementById('loading');
+    <div id="result"></div>
 
-      if (!trackingNumber) {
-        trackingNumberElement.textContent = "No tracking number provided.";
-        return;
-      }
+    <script>
+        function trackOrder() {
+            // Get the tracking number entered by the user
+            const trackingNumber = document.getElementById("trackingNumber").value;
 
-      trackingNumberElement.textContent = trackingNumber;
+            if (trackingNumber) {
+                // Replace the {0} placeholder in the URL with the tracking number
+                const trackingUrl = `https://yessirman1.github.io/mainstream-tracking/?trackingNumber=${trackingNumber}`;
 
-      // Redirect to Mainstream's website
-      const mainstreamUrl = "https://www.mainstream.co.nz";
-      loadingIndicator.textContent = "Redirecting to Mainstream and entering tracking number...";
-
-      // Redirect and delay script execution after page load
-      setTimeout(() => {
-        window.location.href = mainstreamUrl;
-
-        // Use a separate setTimeout to wait for the page to fully load
-        setTimeout(() => {
-          const inputField = document.querySelector("input[name='jobId']");
-          const trackButton = document.querySelector("button.input-group-button");
-
-          if (inputField && trackButton) {
-            inputField.value = trackingNumber; // Enter tracking number
-            trackButton.click(); // Click the "Track" button
-          } else {
-            console.error("Tracking input or button not found!");
-          }
-        }, 3000); // Give the page some time to load before trying to enter data
-      }, 1000); // Redirect delay
-    }
-
-    // Run the function on page load
-    trackOrder();
-  </script>
+                // Create an iframe to load Mainstream's tracking page with the tracking number
+                const iframe = document.createElement("iframe");
+                iframe.src = trackingUrl; // URL with tracking number passed as query parameter
+                iframe.style.width = "100%";
+                iframe.style.height = "600px";
+                
+                // Clear any previous results and append the iframe
+                document.getElementById("result").innerHTML = ""; 
+                document.body.appendChild(iframe);
+            } else {
+                alert("Please enter a tracking number.");
+            }
+        }
+    </script>
 </body>
 </html>
